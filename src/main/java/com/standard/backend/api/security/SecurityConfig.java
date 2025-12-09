@@ -39,7 +39,12 @@ public class SecurityConfig {
                     CorsConfiguration config = new CorsConfiguration();
 
                     String allowedOrigins = System.getenv("CORS_ORIGINS");
-                    config.setAllowedOrigins(allowedOrigins != null ? List.of(allowedOrigins.split(",")) : List.of("*"));
+
+                    if (allowedOrigins != null && !allowedOrigins.isBlank()) {
+                        config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+                    } else {
+                        config.setAllowedOrigins(List.of());
+                    }
 
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
