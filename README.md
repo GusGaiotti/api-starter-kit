@@ -149,13 +149,15 @@ All endpoints except `/api/v1/auth/**` and docs are protected.
 Configuration priority:  
 `application.yml` (dev defaults) → `application-prod.yml` (prod overrides) → Environment variables (Docker)
 
-| Docker Env Var /.env     | Spring Property               | Description                                      |
-|--------------------------|-------------------------------|--------------------------------------------------|
-| `PROD_JWT_SECRET`        | `app.jwt.secret`              | JWT signing key (minimum 32 chars, strong in prod) |
-| `PROD_DB_PASSWORD`       | `spring.datasource.password`  | PostgreSQL password                              |
-| `DB_URL` (auto-set)      | `spring.datasource.url`       | JDBC URL — automatically configured in Docker    |
-| `CORS_ORIGINS` (optional)| `app.cors.allowed-origins`    | Comma-separated frontend domains (e.g. https://myapp.com) |
+| Docker Env Var /.env     | Spring Property               | Description                                      | Default (Behavior) |
+|--------------------------|-------------------------------|--------------------------------------------------|--------------------|
+| `PROD_JWT_SECRET`        | `app.jwt.secret`              | **Base64 Encoded** signing key (min 256-bit)     | *Required in Prod* |
+| `PROD_DB_PASSWORD`       | `spring.datasource.password`  | PostgreSQL password                              | *Required in Prod* |
+| `DB_URL` (auto-set)      | `spring.datasource.url`       | JDBC URL — automatically configured in Docker    | *Auto-configured* |
+| `CORS_ORIGINS`           | `app.cors.allowed-origins`    | Allowed domains (e.g. `https://myapp.com`)       | **Blocks All** (if empty) |
 
+> **Tip:** To generate a secure Base64 JWT secret, run this in your terminal:
+> `openssl rand -base64 32`
 ---
 
 ## 🧪 Running Tests
