@@ -51,7 +51,7 @@ This project removes the repetitive setup of new back-end services. It goes beyo
 Uses in-memory H2 database. Ideal for fast iteration.
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/api-starter-kit.git
+git clone https://github.com/GusGaiotti/api-starter-kit.git
 cd api-starter-kit
 ./mvnw spring-boot:run
 ```
