@@ -22,6 +22,10 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BusinessException("Invalid credentials"));
 
+        if (!Boolean.TRUE.equals(user.getActive())) {
+            throw new BusinessException("Account is disabled");
+        }
+
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new BusinessException("Invalid credentials");
         }
