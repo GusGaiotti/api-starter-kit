@@ -3,6 +3,7 @@ package com.standard.backend.api.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -70,5 +71,12 @@ public class JwtUtil {
     public Boolean validateToken(String token, String username) {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
+    }
+
+    @PostConstruct
+    public void validateConfig() {
+        if (secret == null || secret.length() < 32 || secret.contains("default")) {
+            throw new IllegalStateException("CRITICAL: JWT_SECRET is extremely weak or not set.");
+        }
     }
 }
