@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,10 +60,15 @@ public class UserService {
 
     @Transactional
     public UserResponse update(Long id, UpdateUserRequest request) {
-        log.info("Updating user ID: {}", id);
+
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        if (!user.getEmail().equals(currentUserEmail)) {
+            throw new BusinessException("You are not authorized to update this user.");
+        }
 
         if (request.name() != null) {
             user.setName(request.name());
@@ -80,8 +86,14 @@ public class UserService {
     public void delete(Long id) {
         log.info("Request to deactivate (Soft Delete) user ID: {}", id);
 
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
         User user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        if (!user.getEmail().equals(currentUserEmail)) {
+            throw new BusinessException("You are not authorized to delete this user.");
+        }
 
         user.setActive(false);
         repository.save(user);
