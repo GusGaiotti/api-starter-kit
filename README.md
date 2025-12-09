@@ -28,7 +28,7 @@ This project removes the repetitive setup of new back-end services. It goes beyo
 
 ## 🛠️ Tech Stack
 
-- **Core**: Java 21, Spring Boot 3.3
+- **Core**: Java 21, Spring Boot 3.4+
 - **Data**: PostgreSQL 16 (Prod), H2 (Dev), **Flyway**, Spring Data JPA
 - **Security**: Spring Security, JJWT 0.12
 - **Tooling**: Lombok, Docker, Maven Wrapper
