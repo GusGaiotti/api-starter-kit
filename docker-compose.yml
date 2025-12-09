@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: api-postgres
+    environment:
+      - POSTGRES_DB=apidb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${PROD_DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: api-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=jdbc:postgresql://postgres:5432/apidb
+      - DB_USER=postgres
+      - DB_PASS=${PROD_DB_PASSWORD}
+      - JWT_SECRET=${PROD_JWT_SECRET}
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:4200,https://myapp.com
+volumes:
+  postgres_data:
